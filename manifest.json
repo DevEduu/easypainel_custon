@@ -1,15 +1,24 @@
 {
-    "manifest_version": 3,
-    "name": "EasyPainelCuston",
-    "version": "1.2.2",
-    "description": "Extensão para modificar elementos na página painel.receba.digital/monitor.",
-    "permissions": ["scripting"],
-    "host_permissions": ["https://painel.receba.digital/monitor","https://easy.eduudev.tech/monitor"],
-    "content_scripts": [
-      {
-        "matches": ["https://painel.receba.digital/monitor", "https://easy.eduudev.tech/monitor"],
-        "js": ["content.js"]
-      } 
-    ]
-  }
-  
+  "manifest_version": 3,
+  "name": "EasyPainelCuston",
+  "version": "1.3.9",
+  "description": "Extensão para modificar elementos na página painel.receba.digital/monitor.",
+  "permissions": ["scripting"],
+  "host_permissions": [
+    "https://painel.receba.digital/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://painel.receba.digital/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["receba.svg"],
+      "matches": ["https://painel.receba.digital/*"]
+    }
+  ]
+}

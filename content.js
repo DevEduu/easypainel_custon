@@ -16,12 +16,12 @@ function removerAlerta() {
   }
   
   // Observador para monitorar mudanças no DOM
-  const observer = new MutationObserver(() => {
+  const observer01 = new MutationObserver(() => {
     removerAlerta(); // Tenta remover o elemento sempre que o DOM for alterado
   });
   
   // Configurações do observador
-  observer.observe(document.body, { childList: true, subtree: true });
+  observer01.observe(document.body, { childList: true, subtree: true });
   
   // Tenta remover o elemento imediatamente caso já esteja presente
   document.addEventListener("DOMContentLoaded", () => {
@@ -31,35 +31,78 @@ function removerAlerta() {
 
   ///Remove Logo
 
-
-  // Função para alterar ou adicionar o logo
-document.addEventListener('DOMContentLoaded', () => {
-    // Seleciona o container onde o logo será alterado ou adicionado
-    const targetElement = document.querySelector('header'); // Substitua 'header' pelo seletor correto do local onde o logo será inserido
-
-    if (targetElement) {
-        // Remove logo existente (opcional)
-        const existingLogo = targetElement.querySelector('img');
-        if (existingLogo) {
-            existingLogo.remove();
-        }
-
-        // Cria o novo logo com o HTML fornecido
-        const newLogoDiv = document.createElement('div');
-        newLogoDiv.className = 'size-12 box-border border shadow-sm rounded-lg p-2 bg-background shrink-0 outline outline-[3px] border-transparent outline-green-500 dark:outline-green-600';
-
-        const newLogoImg = document.createElement('img');
-        newLogoImg.alt = 'Home';
-        newLogoImg.src = '/receba.svg'; // Atualize com o caminho correto para o logo na sua extensão
-
-        // Adiciona o <img> dentro do <div>
-        newLogoDiv.appendChild(newLogoImg);
-
-        // Insere o novo logo no elemento alvo
-        targetElement.appendChild(newLogoDiv);
-        console.log("Logo alterado/adicionado com sucesso!");
-    } else {
-        console.error('Elemento de destino para adicionar o logo não foi encontrado.');
-    }
-});
+// Função para remover o alerta
+function removerAlerta() {
+  const alertElement = document.querySelector('div[data-status="warning"]');
+  const blueRemove = document.querySelectorAll('tbody[style*="filter: blur(4px)"]').forEach(element => {
+      element.style.filter = '';
+  });
   
+  if (alertElement) {
+      alertElement.remove();
+  }
+}
+
+// Função para substituir logos
+function substituirLogos() {
+  const logoImages = document.querySelectorAll('img[src="/logomark.svg"]');
+  logoImages.forEach(img => {
+      img.src = chrome.runtime.getURL('receba.svg');
+  });
+}
+
+// Função combinada para todas as ações
+function executarAcoes() {IDBCursor
+  removerAlerta();
+  substituirLogos();
+}
+
+// Configuração do Observer (APENAS UM)
+const observer02 = new MutationObserver(executarAcoes);
+
+// Inicia a observação
+observer02.observe(document.body, { 
+  childList: true, 
+  subtree: true 
+});
+
+// Executa imediatamente ao carregar
+document.addEventListener("DOMContentLoaded", executarAcoes);
+
+
+
+// Cria uma tag <style> com as novas regras
+const style = document.createElement('style');
+style.textContent = `
+    .texto-vermelho {
+        color: #ff0000 !important;
+    }
+    .texto-grande {
+        font-size: 20px !important;
+    }
+`;
+document.head.appendChild(style);
+
+// Exemplo: Aplicar a elementos com a classe "destaque"
+document.querySelectorAll('chakra-button css-1utdamd').forEach(element => {
+  element.classList.add('texto-vermelho', 'texto-grande');
+});
+
+
+// Função para zerar os pixels de uma classe específica
+function zerarPixelsDaClasse(nomeClasse) {
+    // Seleciona todos os elementos com a classe especificada
+    const elementos = document.querySelectorAll(`.${nomeClasse}`);
+    
+    elementos.forEach(elemento => {
+        // Zera as dimensões de largura e altura
+        elemento.style.width = '0px';
+        elemento.style.height = '0px';
+        
+        // Opcionalmente, pode adicionar outras propriedades para "zerar"
+        elemento.style.opacity = '0';
+        elemento.style.visibility = 'hidden';
+        elemento.style.display = 'none';
+    });
+}
+
