@@ -7,6 +7,11 @@
   "host_permissions": [
     "https://painel.receba.digital/*"
   ],
+  "icons": {
+    "192": "icons/icon192.png",
+    "144": "icons/icon144.png",
+    "1024": "icons/icon1024.png"
+  },
   "content_scripts": [
     {
       "matches": [
