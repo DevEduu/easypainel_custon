@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "EasyPainelCuston",
+  "name": "EasyPainelCustom",
   "version": "1.5.0",
   "description": "Extensão para remover blur e substituir logos na página painel.receba.digital.",
   "permissions": ["scripting"],
