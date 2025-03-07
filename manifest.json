@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "EasyPainelCuston",
-  "version": "1.4.2",
-  "description": "Extensão para modificar elementos na página painel.receba.digital/monitor, remover blur e adicionar ferramentas úteis.",
-  "permissions": ["scripting", "storage"],
+  "version": "1.5.0",
+  "description": "Extensão para remover blur e substituir logos na página painel.receba.digital.",
+  "permissions": ["scripting"],
   "host_permissions": [
     "https://painel.receba.digital/*"
   ],
@@ -23,7 +23,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["receba.svg", "icons/*"],
+      "resources": ["receba.svg"],
       "matches": ["https://painel.receba.digital/*"]
     }
   ],
