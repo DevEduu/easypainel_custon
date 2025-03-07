@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "EasyPainelCuston",
-  "version": "1.3.9",
-  "description": "Extensão para modificar elementos na página painel.receba.digital/monitor.",
-  "permissions": ["scripting"],
+  "version": "1.4.0",
+  "description": "Extensão para modificar elementos na página painel.receba.digital/monitor, remover blur e adicionar ferramentas úteis.",
+  "permissions": ["scripting", "storage"],
   "host_permissions": [
     "https://painel.receba.digital/*"
   ],
@@ -17,13 +17,20 @@
       "matches": [
         "https://painel.receba.digital/*"
       ],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["receba.svg"],
+      "resources": ["receba.svg", "icons/*"],
       "matches": ["https://painel.receba.digital/*"]
     }
-  ]
+  ],
+  "action": {
+    "default_title": "EasyPainel Custom",
+    "default_icon": {
+      "144": "icons/icon144.png"
+    }
+  }
 }
