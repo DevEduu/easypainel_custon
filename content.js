@@ -1,25 +1,77 @@
+// Função segura para remover elementos do DOM
+function removerElementoComSeguranca(elemento) {
+    if (!elemento) return false;
+    
+    try {
+        // Método 1: Usando parentNode.removeChild (mais compatível)
+        if (elemento.parentNode) {
+            elemento.parentNode.removeChild(elemento);
+            return true;
+        }
+        
+        // Método 2: Usando remove() (mais moderno)
+        try {
+            elemento.remove();
+            return true;
+        } catch (err) {
+            console.error('EasyPainel: Erro ao usar método remove():', err);
+        }
+        
+        // Método 3: Esconder o elemento se não puder removê-lo
+        try {
+            elemento.style.display = 'none';
+            elemento.style.visibility = 'hidden';
+            elemento.style.opacity = '0';
+            elemento.style.position = 'absolute';
+            elemento.style.pointerEvents = 'none';
+            return true;
+        } catch (err) {
+            console.error('EasyPainel: Erro ao esconder elemento:', err);
+        }
+        
+        return false;
+    } catch (err) {
+        console.error('EasyPainel: Erro ao remover elemento:', err);
+        return false;
+    }
+}
+
 // Função para remover o elemento desejado
 function removerAlerta() {
-    const alertElement = document.querySelector('div[data-status="warning"]');
-    const blueRemove = document.querySelectorAll('tbody[style*="filter: blur(4px)"]').forEach(element => {
-        // Remove o estilo blur do elemento
-        element.style.filter = '';
-    });
-    
-    // Remove blur dos elementos canvas
-    const canvasBlurRemove = document.querySelectorAll('canvas[style*="filter: blur(4px)"]').forEach(element => {
-        // Substitui o blur por 0px para manter a estrutura do filtro mas sem efeito
-        element.style.filter = 'blur(0px)';
-    });
-    
-    const botaoUpdate = document.querySelector('button.chakra-button.css-1mk4yg'); // Seletor do botão
-
-    
-    if (alertElement) {
-      alertElement.remove(); // Remove o elemento do DOM
-      console.log("Elemento de alerta removido com sucesso!");
+    try {
+        const alertElement = document.querySelector('div[data-status="warning"]');
+        
+        // Remove blur de tabelas
+        document.querySelectorAll('tbody[style*="filter: blur(4px)"]').forEach(element => {
+            try {
+                // Remove o estilo blur do elemento
+                element.style.filter = '';
+            } catch (err) {
+                console.error('EasyPainel: Erro ao remover blur de tabela:', err);
+            }
+        });
+        
+        // Remove blur dos elementos canvas
+        document.querySelectorAll('canvas[style*="filter: blur(4px)"]').forEach(element => {
+            try {
+                // Substitui o blur por 0px para manter a estrutura do filtro mas sem efeito
+                element.style.filter = 'blur(0px)';
+            } catch (err) {
+                console.error('EasyPainel: Erro ao remover blur de canvas:', err);
+            }
+        });
+        
+        const botaoUpdate = document.querySelector('button.chakra-button.css-1mk4yg'); // Seletor do botão
+        
+        if (alertElement) {
+            const removido = removerElementoComSeguranca(alertElement);
+            if (removido) {
+                console.log("EasyPainel: Elemento de alerta removido com sucesso!");
+            }
+        }
+    } catch (error) {
+        console.error('EasyPainel: Erro ao remover alerta:', error);
     }
-    
 }
   
 // Observador para monitorar mudanças no DOM
@@ -68,9 +120,16 @@ function removerBlur() {
 }
 
 function removerButton() {
-    const button = document.querySelector('.bg-emerald-600');
-    if (button) {
-        button.remove();
+    try {
+        const button = document.querySelector('.bg-emerald-600');
+        if (button) {
+            const removido = removerElementoComSeguranca(button);
+            if (removido) {
+                console.log('EasyPainel: Botão removido com sucesso');
+            }
+        }
+    } catch (error) {
+        console.error('EasyPainel: Erro ao remover botão:', error);
     }
 }
 
@@ -106,111 +165,257 @@ function adicionarTags() {
 // Função para adicionar novo elemento à tela
 function adicionarNovoElemento() {
     // Verifica se o elemento já existe para evitar duplicação
-    if (document.querySelector('#easypainel-custom-element')) {
+    const existingElement = document.querySelector('#easypainel-custom-element');
+    if (existingElement) {
+        // Se já existe, não cria novamente
         return;
     }
     
-    // Cria o container principal
-    const container = document.createElement('div');
-    container.id = 'easypainel-custom-element';
-    container.className = 'border-b-2 border-sidebar-border css-1m48p5d';
-    container.style.padding = '10px';
-    container.style.margin = '10px 0';
-    container.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-    container.style.borderRadius = '5px';
-    
-    // Cria o botão principal
-    const mainButton = document.createElement('a');
-    mainButton.href = '#';
-    mainButton.className = 'chakra-button css-1utdamd';
-    mainButton.textContent = 'EasyPainel';
-    mainButton.setAttribute('data-easypainel-id', 'custom-main-button');
-    
-    // Cria botões de ação
-    const actionButtons = [
-        { label: 'Remover Blur', icon: 'M10 12a2 2 0 100-4 2 2 0 000 4z', action: removerBlur },
-        { label: 'Identificar Elementos', icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2', action: adicionarTags },
-        { label: 'Limpar Console', icon: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16', action: () => console.clear() }
-    ];
-    
-    // Adiciona o botão principal ao container
-    container.appendChild(mainButton);
-    
-    // Adiciona os botões de ação
-    actionButtons.forEach((btnConfig, index) => {
-        const button = document.createElement('a');
-        button.href = '#';
-        button.className = 'chakra-button css-d6eevf';
-        button.setAttribute('aria-label', btnConfig.label);
-        button.setAttribute('data-easypainel-id', `custom-action-${index}`);
-        button.title = btnConfig.label;
+    try {
+        // Cria o container principal
+        const container = document.createElement('div');
+        container.id = 'easypainel-custom-element';
+        container.className = 'border-b-2 border-sidebar-border css-1m48p5d';
+        container.style.padding = '10px';
+        container.style.margin = '10px 0';
+        container.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        container.style.borderRadius = '0px';
         
-        // Cria o ícone SVG
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('stroke', 'currentColor');
-        svg.setAttribute('fill', 'currentColor');
-        svg.setAttribute('stroke-width', '0');
-        svg.setAttribute('viewBox', '0 0 20 20');
-        svg.setAttribute('aria-hidden', 'true');
-        svg.setAttribute('focusable', 'false');
-        svg.setAttribute('class', 'chakra-icon css-u43od');
-        svg.setAttribute('height', '1em');
-        svg.setAttribute('width', '1em');
+        // Cria o botão principal
+        const mainButton = document.createElement('a');
+        mainButton.href = '#';
+        mainButton.className = 'chakra-button css-1utdamd';
+        mainButton.textContent = 'EasyPainel';
+        mainButton.setAttribute('data-easypainel-id', 'custom-main-button');
         
-        // Cria o path do ícone
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', btnConfig.icon);
-        path.setAttribute('fill-rule', 'evenodd');
-        path.setAttribute('clip-rule', 'evenodd');
+        // Cria botões de ação
+        const actionButtons = [
+            { label: 'Remover Blur', icon: 'M10 12a2 2 0 100-4 2 2 0 000 4z', action: removerBlur },
+            { label: 'Identificar Elementos', icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2', action: adicionarTags },
+            { label: 'Limpar Console', icon: 'M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16', action: () => console.clear() }
+        ];
         
-        // Adiciona o path ao SVG
-        svg.appendChild(path);
+        // Adiciona o botão principal ao container
+        container.appendChild(mainButton);
         
-        // Adiciona o SVG ao botão
-        button.appendChild(svg);
-        
-        // Adiciona o evento de clique
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            btnConfig.action();
+        // Adiciona os botões de ação
+        actionButtons.forEach((btnConfig, index) => {
+            const button = document.createElement('a');
+            button.href = '#';
+            button.className = 'chakra-button css-d6eevf';
+            button.setAttribute('aria-label', btnConfig.label);
+            button.setAttribute('data-easypainel-id', `custom-action-${index}`);
+            button.title = btnConfig.label;
+            
+            // Cria o ícone SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('stroke', 'currentColor');
+            svg.setAttribute('fill', 'currentColor');
+            svg.setAttribute('stroke-width', '0');
+            svg.setAttribute('viewBox', '0 0 20 20');
+            svg.setAttribute('aria-hidden', 'true');
+            svg.setAttribute('focusable', 'false');
+            svg.setAttribute('class', 'chakra-icon css-u43od');
+            svg.setAttribute('height', '1em');
+            svg.setAttribute('width', '1em');
+            
+            // Cria o path do ícone
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            path.setAttribute('d', btnConfig.icon);
+            path.setAttribute('fill-rule', 'evenodd');
+            path.setAttribute('clip-rule', 'evenodd');
+            
+            // Adiciona o path ao SVG
+            svg.appendChild(path);
+            
+            // Adiciona o SVG ao botão
+            button.appendChild(svg);
+            
+            // Adiciona o evento de clique
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                btnConfig.action();
+            });
+            
+            // Adiciona o botão ao container
+            container.appendChild(button);
         });
         
-        // Adiciona o botão ao container
-        container.appendChild(button);
-    });
-    
-    // Encontra um local adequado para inserir o novo elemento
-    const targetLocation = document.querySelector('.border-b-2.border-sidebar-border');
-    if (targetLocation) {
-        // Insere após o elemento alvo
-        targetLocation.parentNode.insertBefore(container, targetLocation.nextSibling);
-    } else {
-        // Fallback: adiciona ao corpo do documento
-        document.body.appendChild(container);
+        // Método 1: Tenta inserir após um elemento existente
+        try {
+            const targetLocation = document.querySelector('.border-b-2.border-sidebar-border');
+            if (targetLocation && targetLocation.parentNode) {
+                targetLocation.parentNode.insertBefore(container, targetLocation.nextSibling);
+                console.log('EasyPainel: Elemento personalizado adicionado com sucesso');
+                return;
+            }
+        } catch (err) {
+            console.error('EasyPainel: Erro ao inserir após elemento existente:', err);
+        }
+        
+        // Método 2: Tenta inserir no início do body
+        try {
+            if (document.body.firstChild) {
+                document.body.insertBefore(container, document.body.firstChild);
+                console.log('EasyPainel: Elemento personalizado adicionado no início do body');
+                return;
+            }
+        } catch (err) {
+            console.error('EasyPainel: Erro ao inserir no início do body:', err);
+        }
+        
+        // Método 3: Último recurso - append ao body
+        try {
+            document.body.appendChild(container);
+            console.log('EasyPainel: Elemento personalizado adicionado ao final do body');
+        } catch (err) {
+            console.error('EasyPainel: Erro ao adicionar ao final do body:', err);
+        }
+    } catch (error) {
+        console.error('EasyPainel: Erro ao criar elemento personalizado:', error);
     }
 }
 
 // Função combinada para todas as ações
 function executarAcoes() {
-    removerAlerta();
-    substituirLogos();
-    removerBlur();
-    removerButton();
-    adicionarTags();
-    adicionarNovoElemento();
+    // Evita execuções simultâneas
+    if (window.executandoAcoes) {
+        console.log('EasyPainel: Já existe uma execução em andamento, ignorando...');
+        return;
+    }
+    
+    window.executandoAcoes = true;
+    
+    try {
+        console.log('EasyPainel: Executando ações...');
+        
+        // Executa cada ação em uma Promise separada para evitar bloqueios
+        Promise.resolve()
+            .then(() => {
+                try { removerAlerta(); } 
+                catch (e) { console.error('EasyPainel: Erro ao remover alerta:', e); }
+                return new Promise(resolve => setTimeout(resolve, 50)); // Pequeno atraso entre ações
+            })
+            .then(() => {
+                try { substituirLogos(); } 
+                catch (e) { console.error('EasyPainel: Erro ao substituir logos:', e); }
+                return new Promise(resolve => setTimeout(resolve, 50));
+            })
+            .then(() => {
+                try { removerBlur(); } 
+                catch (e) { console.error('EasyPainel: Erro ao remover blur:', e); }
+                return new Promise(resolve => setTimeout(resolve, 50));
+            })
+            .then(() => {
+                try { removerButton(); } 
+                catch (e) { console.error('EasyPainel: Erro ao remover botão:', e); }
+                return new Promise(resolve => setTimeout(resolve, 50));
+            })
+            .then(() => {
+                try { adicionarTags(); } 
+                catch (e) { console.error('EasyPainel: Erro ao adicionar tags:', e); }
+                return new Promise(resolve => setTimeout(resolve, 50));
+            })
+            .then(() => {
+                try { adicionarNovoElemento(); } 
+                catch (e) { console.error('EasyPainel: Erro ao adicionar novo elemento:', e); }
+            })
+            .finally(() => {
+                console.log('EasyPainel: Todas as ações foram executadas');
+                window.executandoAcoes = false;
+            });
+    } catch (error) {
+        console.error('EasyPainel: Erro geral ao executar ações:', error);
+        window.executandoAcoes = false;
+    }
+}
+
+// Desconecta observadores anteriores se existirem
+if (window.observer01) {
+    try {
+        window.observer01.disconnect();
+        console.log('EasyPainel: Observer01 anterior desconectado');
+    } catch (e) {
+        console.error('EasyPainel: Erro ao desconectar observer01:', e);
+    }
+}
+
+if (window.observer02) {
+    try {
+        window.observer02.disconnect();
+        console.log('EasyPainel: Observer02 anterior desconectado');
+    } catch (e) {
+        console.error('EasyPainel: Erro ao desconectar observer02:', e);
+    }
 }
 
 // Configuração do Observer (APENAS UM)
-const observer02 = new MutationObserver(executarAcoes);
+window.observer02 = new MutationObserver((mutations) => {
+    // Evita processamento excessivo
+    if (window.easyPainelTimeout) {
+        clearTimeout(window.easyPainelTimeout);
+    }
+    
+    window.easyPainelTimeout = setTimeout(() => {
+        // Verifica se alguma das mutações é relevante para nós
+        const relevantMutation = mutations.some(mutation => {
+            // Verifica se é uma adição de nós
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                // Verifica se algum dos nós adicionados é relevante
+                return Array.from(mutation.addedNodes).some(node => {
+                    // Verifica se é um elemento DOM
+                    if (node.nodeType === Node.ELEMENT_NODE) {
+                        // Verifica se tem alguma classe que nos interessa
+                        const element = node;
+                        return (
+                            element.classList && (
+                                element.classList.contains('chakra-button') ||
+                                element.classList.contains('bg-emerald-600') ||
+                                element.querySelector('canvas[style*="filter: blur"]') ||
+                                element.querySelector('tbody[style*="filter: blur"]') ||
+                                element.querySelector('div[data-status="warning"]')
+                            )
+                        );
+                    }
+                    return false;
+                });
+            }
+            return false;
+        });
 
-// Inicia a observação
-observer02.observe(document.body, { 
-    childList: true, 
-    subtree: true 
+        // Se houver mutações relevantes, executa as ações
+        if (relevantMutation) {
+            executarAcoes();
+        }
+    }, 500); // Aguarda 500ms para executar (debounce mais longo)
 });
 
+// Inicia a observação com configurações mais específicas
+try {
+    window.observer02.observe(document.body, { 
+        childList: true, 
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class', 'data-status']
+    });
+    console.log('EasyPainel: Observer iniciado com sucesso');
+} catch (e) {
+    console.error('EasyPainel: Erro ao iniciar observer:', e);
+}
+
 // Executa imediatamente ao carregar
-document.addEventListener("DOMContentLoaded", executarAcoes);
+document.addEventListener("DOMContentLoaded", () => {
+    console.log('EasyPainel: DOM carregado, executando ações iniciais...');
+    // Pequeno atraso para garantir que o DOM esteja completamente carregado
+    setTimeout(executarAcoes, 1000);
+});
+
+// Executa novamente após o carregamento completo da página
+window.addEventListener("load", () => {
+    console.log('EasyPainel: Página totalmente carregada, executando ações novamente...');
+    // Pequeno atraso para garantir que todos os recursos estejam carregados
+    setTimeout(executarAcoes, 2000);
+});
 
 // Cria uma tag <style> com as novas regras
 const style = document.createElement('style');

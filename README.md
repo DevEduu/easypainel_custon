@@ -14,6 +14,12 @@ EasyPainel Custom é uma extensão para o Chrome que melhora a experiência de u
 - **Identificação de Elementos**: Adiciona atributos data-* aos elementos para facilitar a identificação e depuração.
 - **Barra de Ferramentas Personalizada**: Adiciona uma barra com botões para funções úteis como remover blur e identificar elementos.
 
+## Versões
+- **1.4.2**: Implementação de sistema ultra-robusto para manipulação do DOM e prevenção de erros.
+- **1.4.1**: Correção de bugs relacionados à remoção de elementos DOM e melhorias de desempenho.
+- **1.4.0**: Adição de identificação de elementos e barra de ferramentas personalizada.
+- **1.3.9**: Versão inicial com remoção de blur e alertas.
+
 ## Como Instalar
 
 1. Faça o download ou clone este repositório
@@ -54,12 +60,22 @@ Não é necessária nenhuma configuração adicional. A extensão funciona autom
 - `README.md`: Documentação da extensão
 
 ### Funções Principais
+- `removerElementoComSeguranca()`: Função central para remoção segura de elementos DOM
 - `removerAlerta()`: Remove alertas indesejados
 - `removerBlur()`: Remove efeitos de blur
 - `substituirLogos()`: Substitui logos
 - `adicionarTags()`: Adiciona identificadores aos elementos
 - `adicionarNovoElemento()`: Adiciona a barra de ferramentas personalizada
 - `executarAcoes()`: Função principal que executa todas as ações
+
+### Tratamento de Erros
+A versão 1.4.2 implementa um sistema ultra-robusto para manipulação do DOM:
+- Função especializada para remoção segura de elementos com múltiplas estratégias de fallback
+- Execução assíncrona de ações com Promises para evitar bloqueios
+- Sistema de debounce aprimorado para evitar execuções excessivas
+- Prevenção de execuções simultâneas para evitar conflitos
+- Tratamento de erros em múltiplos níveis para garantir a continuidade da execução
+- Armazenamento de observadores em variáveis globais para evitar duplicação
 
 ### Contribuição
 Para contribuir com o projeto:
