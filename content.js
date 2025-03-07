@@ -67,11 +67,19 @@ function removerBlur() {
     });
 }
 
+function removerButton() {
+    const button = document.querySelector('.bg-emerald-600');
+    if (button) {
+        button.remove();
+    }
+}
+
 // Função combinada para todas as ações
 function executarAcoes() {
     removerAlerta();
     substituirLogos();
     removerBlur();
+    removerButton();
 }
 
 // Configuração do Observer (APENAS UM)
